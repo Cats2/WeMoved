@@ -1,4 +1,4 @@
-package com.wemove;
+/*package com.wemove;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by utilisateur on 14/12/2014.
  */
-public class Localisation extends Activity implements LocationListener{
+/*public class Localisation extends Activity implements LocationListener{
 
     double mylatitude;
     double mylongitude;
@@ -109,3 +109,4 @@ public class Localisation extends Activity implements LocationListener{
 
     }
 }
+*/

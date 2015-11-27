@@ -3,7 +3,10 @@ package com.wemove;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ListFragment;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -55,10 +58,23 @@ public class GeolocFragment extends ListFragment implements LocationListener, Se
     Location siteLocation  = new Location("point B");
     SensorManager senSensorManager;
     Sensor senAccelerometer;
+    MyContentProvider bdd = new MyContentProvider();
 
     private long lastUpdate = 0;
     private float last_x, last_y, last_z;
     private static final int SHAKE_THRESHOLD = 600;
+
+    private static final String KEY_ID = "_id";
+    private static final String NAME = "name";
+    private static final String DESCR = "description";
+    private static final String ADRESSE = "adresse";
+    private static final String TEL = "tel";
+    private static final String WEB = "web";
+    private static final String TARIF = "tarif";
+    private static final String REDUC = "reduc";
+    private static final String GRP = "groupe";
+    private static final String AUDIO = "audio";
+    private static final String GUIDE = "guide";
 
     public static GeolocFragment newInstance() {
         GeolocFragment fragment = new GeolocFragment();
@@ -98,7 +114,7 @@ public class GeolocFragment extends ListFragment implements LocationListener, Se
 
         senSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -128,12 +144,37 @@ public class GeolocFragment extends ListFragment implements LocationListener, Se
         adapter.notifyDataSetChanged();
         // On associe l'adapter a notre ListView
         //listview.setAdapter(adapter);
-        this.setListAdapter(adapter);
-        // action de selection d'un objet dans la liste
-
         return rootView;
+
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        this.setListAdapter(adapter);
+        /*getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                // ListView Clicked item index
+                int itemPosition = position;
+                String text = (String) parent.getItemAtPosition(position);
+                text.split(" ");
+                String columns[] = new String[]{NAME, KEY_ID};
+                Cursor cur = bdd.query(MyContentProvider.CONTENT_URI, columns, null, null, null);
+                // ListView Clicked item value
+                //String  itemValue    = (String) lv.getItemAtPosition(position);
+                //Site_Select st = new Site_Select(itemValue, listId[itemPosition]);
+                Intent intent = new Intent(context, Site.class);
+                intent.putExtra("nom", cur.getString(0));
+                intent.putExtra("id", cur.getInt(1));
+                startActivity(intent);
+            }
+        });*/
+    }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -153,7 +194,7 @@ public class GeolocFragment extends ListFragment implements LocationListener, Se
 
     @Override
     public void onLocationChanged(Location location) {
-
+        search();
     }
 
     @Override
@@ -217,6 +258,7 @@ public class GeolocFragment extends ListFragment implements LocationListener, Se
 
     private void search()
     {
+        sites.clear();
         AsyncHttpClient client = new AsyncHttpClient();
         //setProgressBarIndeterminateVisibility(true);
         Log.i("Query URL", QUERY_URL);
@@ -242,6 +284,19 @@ public class GeolocFragment extends ListFragment implements LocationListener, Se
                         distance = (float)(dist*0.1);
                         SiteLieu sl = new SiteLieu(arr.getJSONObject(i).getInt("id"), arr.getJSONObject(i).getString("nom"), distance);
                         sites.add(sl);
+                        ContentValues contact = new ContentValues();
+                        contact.put(NAME, arr.getJSONObject(i).getInt("id"));
+                        contact.put(NAME, arr.getJSONObject(i).getString("nom"));
+                        contact.put(DESCR, arr.getJSONObject(i).getString("description"));
+                        contact.put(ADRESSE, arr.getJSONObject(i).getString("adresse"));
+                        contact.put(TEL, arr.getJSONObject(i).getString("tel"));
+                        contact.put(WEB, arr.getJSONObject(i).getString("web"));
+                        contact.put(TARIF, arr.getJSONObject(i).getString("tarif"));
+                        contact.put(REDUC, arr.getJSONObject(i).getString("reduction"));
+                        contact.put(GRP, arr.getJSONObject(i).getString("groupe"));
+                        contact.put(AUDIO, arr.getJSONObject(i).getString("audioguide"));
+                        contact.put(GUIDE, arr.getJSONObject(i).getString("guide"));
+                        context.getContentResolver().insert(MyContentProvider.CONTENT_URI, contact);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -252,6 +307,7 @@ public class GeolocFragment extends ListFragment implements LocationListener, Se
                 int i = 0;
                 for (SiteLieu s : sites)
                 {
+
                     item.add(s.toString());
                     i++;
                 }
