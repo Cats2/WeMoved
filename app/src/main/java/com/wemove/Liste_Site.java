@@ -4,15 +4,21 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -27,6 +33,8 @@ public class Liste_Site extends ListActivity {
     ArrayList<Site_select> listId=new ArrayList<Site_select>();
     String categ= "";
     String region="";
+    private static final String QUERY_URL =  "http://wemove.herokuapp.com/sites.json?categorie=";
+    private static final String QUERY_URL2 =  "&region_nom=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +46,7 @@ public class Liste_Site extends ListActivity {
             categ= i.getString("categ");
             region= i.getString("region");
         }
-        String url = "http://wemove.herokuapp.com/sites.json?categorie=" + categ+"&region_nom=" + region;
-        new DLTask().execute(url);
+        search(categ, region);
        //values = new String[] {"Device", "Musee Granet"};
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values);
         adaptateur = new AdaptateurListe(this, listItems);
@@ -115,5 +122,54 @@ public class Liste_Site extends ListActivity {
             adaptateur.notifyDataSetChanged();
 
         }
+    }
+
+    private void search(String searchcateg, String searchRegion)
+    {
+        String urlStringCateg = "";
+        String urlStringReg = "";
+        try{
+            urlStringCateg = URLEncoder.encode(searchcateg, "UTF-8");
+            urlStringReg = URLEncoder.encode(searchRegion, "UTF-8");
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            //Toast.makeText(this.getActivity(), "Error" + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        AsyncHttpClient client = new AsyncHttpClient();
+        //setProgressBarIndeterminateVisibility(true);
+        Log.i("Query URL", QUERY_URL + urlStringCateg + QUERY_URL2 + urlStringReg);
+        client.get(QUERY_URL + urlStringCateg + QUERY_URL2 + urlStringReg, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(String response) {
+                Log.i("Request", "Success");
+                JSONArray arr = null;
+                try {
+                    arr = new JSONArray(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < arr.length(); i++)
+                {
+                    try {
+                        String nom = arr.getJSONObject(i).getString("nom");
+                        int id = arr.getJSONObject(i).getInt("id");
+                        listItems.add(nom);
+                        listId.add(new Site_select(nom, id));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                Collections.sort(listItems);
+                Collections.sort(listId, new Comparatorsite());
+                adaptateur.notifyDataSetChanged();
+            }
+            @Override
+            public void onFinish() {
+                Log.i("Request", "Finish");
+            }
+
+        });
     }
 }

@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/AdaptateurListe.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/Categorie.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/DLUrl.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/EnumImg.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/List_region.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/Liste_Site.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/Localisation.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/Site.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/wemove/Site_select.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/arcdorange.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/arenedarles.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/calanque.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/drawable" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/enreg.png" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/info.png" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/marineland.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/museegranet.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/notredamelagarde.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/position.png" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/senanque.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/tel.png" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/tourdecrest.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/vieillecharite.jpg" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/web.png" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/categorie.xml" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/list_region.xml" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/liste_site.xml" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/localisation.xml" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/site.xml" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/app/src/main/res/values/color.xml" charset="windows-1252" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

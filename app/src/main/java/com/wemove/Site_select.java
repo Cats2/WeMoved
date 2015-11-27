@@ -34,5 +34,7 @@ class Comparatorsite implements Comparator<Site_select> {
     public int compare(Site_select a, Site_select b) {
         return a.getNom().compareToIgnoreCase(b.getNom());
     }
+
+
 }
 

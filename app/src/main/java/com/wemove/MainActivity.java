@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
                 // Le premier paramètre est le nom de l'activité actuelle
                 // Le second est le nom de l'activité de destination
                 //new List_region.DLTask().execute("http://192.168.1.13:3000");
-                Intent intent = new Intent(MainActivity.this, Localisation.class);
+                Intent intent = new Intent(MainActivity.this, GeoLocalisation.class);
                 // On rajoute un extra
                 //intent.putExtra(AGE, 31);
                 // Puis on lance l'intent !

@@ -33,20 +33,20 @@ public class Localisation extends Activity implements LocationListener{
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // Critère pour le fournisseur
+        // Critï¿½re pour le fournisseur
         Criteria critere = new Criteria();
-        // On peut mettre ACCURACY_FINE pour une haute précision ou ACCURACY_COARSE pour une moins bonne précision
+        // On peut mettre ACCURACY_FINE pour une haute prï¿½cision ou ACCURACY_COARSE pour une moins bonne prï¿½cision
         //critere.setAccuracy(Criteria.ACCURACY_FINE);
-        // Est-ce que le fournisseur doit être capable de donner une altitude ?
+        // Est-ce que le fournisseur doit ï¿½tre capable de donner une altitude ?
         critere.setAltitudeRequired(true);
-        // Est-ce que le fournisseur doit être capable de donner une direction ?
+        // Est-ce que le fournisseur doit ï¿½tre capable de donner une direction ?
         critere.setBearingRequired(true);
-        // Est-ce que le fournisseur peut être payant ?
+        // Est-ce que le fournisseur peut ï¿½tre payant ?
         critere.setCostAllowed(false);
-        // Pour indiquer la consommation d'énergie demandée
+        // Pour indiquer la consommation d'ï¿½nergie demandï¿½e
         // Criteria.POWER_HIGH pour une haute consommation, Criteria.POWER_MEDIUM pour une consommation moyenne et Criteria.POWER_LOW pour une basse consommation
         //critere.setPowerRequirement(Criteria.POWER_HIGH);
-        // Est-ce que le fournisseur doit être capable de donner une vitesse ?
+        // Est-ce que le fournisseur doit ï¿½tre capable de donner une vitesse ?
         //critere.setSpeedRequired(true);
 
         ArrayList<LocationProvider> providers = new ArrayList<LocationProvider>();
@@ -67,9 +67,9 @@ public class Localisation extends Activity implements LocationListener{
         distance *= 0.01;
         int dist = (int) distance;
         distance = (float)(dist*0.1);
-        listview = (ListView) findViewById(R.id.liste_loc);
+        //listview = (ListView) findViewById(R.id.list);
 
-        String[] item = new String[]{"Musée Granet  :" + distance + " km"};
+        String[] item = new String[]{"Musï¿½e Granet  :" + distance + " km"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,android.R.id.text1, item);
         adapter.notifyDataSetChanged();
         listview.setAdapter(adapter);
@@ -99,9 +99,9 @@ public class Localisation extends Activity implements LocationListener{
         distance *= 0.01;
         int dist = (int) distance;
         distance = (float)(dist*0.1);
-        listview = (ListView) findViewById(R.id.liste_loc);
+        //listview = (ListView) findViewById(R.id.list);
 
-        String[] item = new String[]{"Musée Granet  :" + distance + " km"};
+        String[] item = new String[]{"Musï¿½e Granet  :" + distance + " km"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,android.R.id.text1, item);
         adapter.notifyDataSetChanged();
         listview.setAdapter(adapter);

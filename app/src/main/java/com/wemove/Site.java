@@ -3,6 +3,7 @@ package com.wemove;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,10 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Collections;
 
 /**
  * Created by utilisateur on 13/12/2014.
@@ -47,6 +54,8 @@ public class Site extends Activity {
     String guide;
     ImageView img;
     int id;
+    private static final String QUERY_URL =  "http://wemove.herokuapp.com/sites.json?id=";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +66,8 @@ public class Site extends Activity {
             id= i.getInt("id");
         }
         System.out.println("nom = " + nom);
-        String url = "http://wemove.herokuapp.com/sites.json?id=" + id;
-        new DLTask().execute(url);
+        String urlparam = Integer.toString(id);
+        search(urlparam);
         // Nom du site
         nom_site = (TextView) findViewById(R.id.nom_site);
         addr = (TextView) findViewById(R.id.addr);
@@ -120,93 +129,78 @@ public class Site extends Activity {
         return true;
     }
 
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private void search(String searchString)
+    {
+        String urlString = "";
+        try{
+            urlString = URLEncoder.encode(searchString, "UTF-8");
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            //Toast.makeText(this.getActivity(), "Error" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        else if (id == R.id.enreg)
-        {
-            Toast.makeText(getApplicationContext(),"Lieu enregistré", Toast.LENGTH_LONG)
-                    .show();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
-
-    public class DLTask extends AsyncTask<String, Void, String> {
-
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                DLUrl dlurl = new DLUrl();
-                return dlurl.downloadUrl(urls[0]);
-            } catch (IOException e) {
-                return "Unable to retrieve web page";
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result)
-        {
-
-            JSONArray arr = null;
-            try {
-                arr = new JSONArray(result);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < arr.length(); i++)
-            {
+        AsyncHttpClient client = new AsyncHttpClient();
+        //setProgressBarIndeterminateVisibility(true);
+        Log.i("Query URL", QUERY_URL + urlString);
+        client.get(QUERY_URL + urlString, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(String response) {
+                Log.i("Request", "Success");
+                JSONArray arr = null;
                 try {
-                    nom = arr.getJSONObject(i).getString("nom");
-                    adresse = arr.getJSONObject(i).getString("adresse");
-                    web = arr.getJSONObject(i).getString("web");
-                    description = arr.getJSONObject(i).getString("description");
-                    telephone = arr.getJSONObject(i).getString("tel");
-                    tarif_normal = arr.getJSONObject(i).getString("tarif");
-                    reduction = arr.getJSONObject(i).getString("reduction");
-                    groupe = arr.getJSONObject(i).getString("reduction");
-                    audioguide = arr.getJSONObject(i).getString("reduction");
-                    guide = arr.getJSONObject(i).getString("reduction");
-                    id = arr.getJSONObject(i).getInt("id");
+                    arr = new JSONArray(response);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                for (int i = 0; i < arr.length(); i++)
+                {
+                    try {
+                        nom = arr.getJSONObject(i).getString("nom");
+                        adresse = arr.getJSONObject(i).getString("adresse");
+                        web = arr.getJSONObject(i).getString("web");
+                        description = arr.getJSONObject(i).getString("description");
+                        telephone = arr.getJSONObject(i).getString("tel");
+                        tarif_normal = arr.getJSONObject(i).getString("tarif");
+                        reduction = arr.getJSONObject(i).getString("reduction");
+                        groupe = arr.getJSONObject(i).getString("reduction");
+                        audioguide = arr.getJSONObject(i).getString("reduction");
+                        guide = arr.getJSONObject(i).getString("reduction");
+                        id = arr.getJSONObject(i).getInt("id");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
+                }
+                System.out.println("id : " + EnumImg.Image.values()[id]);
+                nom_site.setText(nom);
+                descr.setText(description);
+                addr.setText(adresse);
+                adr_web.setText(web);
+                tel.setText(telephone);
+                img.setImageResource(EnumImg.Image.values()[id-1].getDrawable());
+                tarif.setText("Tarif Normal : " + tarif_normal);
+                if(reduction.equals("1"))
+                {
+                    reduc.setChecked(true);
+                }
+                if(groupe.equals("1"))
+                {
+                    groupe_box.setChecked(true);
+                }
+                if(audioguide.equals("1"))
+                {
+                    audio_box.setChecked(true);
+                }
+                if(guide.equals("1"))
+                {
+                    guide_box.setChecked(true);
+                }
             }
-            System.out.println("id : " + EnumImg.Image.values()[id]);
-            nom_site.setText(nom);
-            descr.setText(description);
-            addr.setText(adresse);
-            adr_web.setText(web);
-            tel.setText(telephone);
-            img.setImageResource(EnumImg.Image.values()[id-1].getDrawable());
-            tarif.setText("Tarif Normal : " + tarif_normal);
-            if(reduction.equals("1"))
-            {
-                reduc.setChecked(true);
+            @Override
+            public void onFinish() {
+                Log.i("Request", "Finish");
             }
-            if(groupe.equals("1"))
-            {
-                groupe_box.setChecked(true);
-            }
-            if(audioguide.equals("1"))
-            {
-                audio_box.setChecked(true);
-            }
-            if(guide.equals("1"))
-            {
-                guide_box.setChecked(true);
-            }
-        }
+        });
     }
 
 }
