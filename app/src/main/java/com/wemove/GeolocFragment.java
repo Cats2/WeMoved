@@ -5,6 +5,10 @@ import android.app.Fragment;
 import android.app.ListFragment;
 import android.content.Context;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -38,7 +42,7 @@ import java.util.List;
 /**
  * Created by Cats2 on 27/11/2015.
  */
-public class GeolocFragment extends ListFragment implements LocationListener {
+public class GeolocFragment extends ListFragment implements LocationListener, SensorEventListener {
 
     private OnFragmentInteractionListener mListener;
     ListView listview;
@@ -47,8 +51,14 @@ public class GeolocFragment extends ListFragment implements LocationListener {
     private static final String QUERY_URL =  "http://wemove.herokuapp.com/sites.json";
     List<SiteLieu> sites = new ArrayList<SiteLieu>();
     Context context;
-    Location myLocation  = new Location("point A");;
-    Location siteLocation  = new Location("point B");;
+    Location myLocation  = new Location("point A");
+    Location siteLocation  = new Location("point B");
+    SensorManager senSensorManager;
+    Sensor senAccelerometer;
+
+    private long lastUpdate = 0;
+    private float last_x, last_y, last_z;
+    private static final int SHAKE_THRESHOLD = 600;
 
     public static GeolocFragment newInstance() {
         GeolocFragment fragment = new GeolocFragment();
@@ -85,6 +95,10 @@ public class GeolocFragment extends ListFragment implements LocationListener {
 
         myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 100, this);
+
+        senSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -155,6 +169,45 @@ public class GeolocFragment extends ListFragment implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        Sensor mySensor = event.sensor;
+        if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float y = event.values[1];
+
+            long curTime = System.currentTimeMillis();
+
+            if ((curTime - lastUpdate) > 1000) {
+                long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
+                int position = getListView().getFirstVisiblePosition();
+                    double diff = y - last_y;
+                    diff = diff*10;
+                    Double d = new Double(diff);
+                    System.out.println(d.intValue());
+                    getListView().setSelection(position - d.intValue()/10);
+                last_y = y;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        senSensorManager.unregisterListener(this);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public interface OnFragmentInteractionListener {
